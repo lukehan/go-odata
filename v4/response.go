@@ -1,7 +1,7 @@
 package v4
 
 import (
-	"github.com/emicklei/go-restful"
+	"net/http"
 )
 
 const (
@@ -24,7 +24,7 @@ type Response struct {
 	Value interface{} `json:"value"`
 }
 
-func WriteResponse(response *restful.Response, oResponse Response) error {
-	response.AddHeader("OData-Version", ODataVersion)
-	return response.WriteEntity(oResponse)
+func PrepareResponse(header http.Header, responseData interface{}) (response *Response, err error) {
+	header.Add("OData-Version", ODataVersion)
+	return &Response{Value:responseData}, nil
 }

@@ -1,44 +1,43 @@
 package odata
 
 import (
-	"strings"
 	"net/http"
 	"github.com/amsokol/go-odata/v4"
+	"errors"
 )
-
-// OData commands
-const (
-	CmdUnknown Command = 0
-	CmdReadServiceRoot Command = 1
-)
-
-type Command int
 
 type Request struct {
+	Version string
 	MaxVersion string
-	Command Command
+	Data interface{}
 }
 
-func ParseRequest(request *http.Request, baseUrl string) (oRequest Request, err error) {
+func ParseRequest(request *http.Request, baseUrl string) (oRequest *Request, err error) {
 	//	var regexp = regexp.MustCompile(`^(\w+)(\('(.+)'\))?$`)
 	//	return Request{Resource: "qwerty", Others: regexp.FindStringSubmatch(resources)}, err
 
-	oRequest = Request{MaxVersion: request.Header.Get("OData-MaxVersion")}
+	oRequest = &Request{
+		MaxVersion: request.Header.Get("OData-MaxVersion"),
+		Version: request.Header.Get("OData-Version")}
 
 	if len(oRequest.MaxVersion) == 0 {
+		// use version 4.0 by default
 		oRequest.MaxVersion = v4.ODataVersion
 	}
 
-	path := strings.Trim(
-		strings.TrimPrefix(
-			strings.TrimLeft(request.URL.Path, "/"),
-			strings.Trim(baseUrl, "/")),
-		"/")
-
-	if path = strings.TrimSpace(path); len(path) == 0 {
-		oRequest.Command = CmdReadServiceRoot
-		return oRequest, nil
+	if len(oRequest.Version) == 0 {
+		oRequest.Version = oRequest.MaxVersion
 	}
 
-	return oRequest, nil
+	switch oRequest.Version {
+		case v4.ODataVersion:
+			oRequest.Data, err = v4.ParseRequestData(request, baseUrl)
+		default:
+			err = errors.New("Unsupported OData version")
+	}
+
+	if err != nil {
+		oRequest = nil
+	}
+	return oRequest, err
 }
