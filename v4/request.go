@@ -2,7 +2,7 @@ package v4
 
 import (
 	"net/http"
-	"strings"
+//	"strings"
 )
 
 const (
@@ -21,7 +21,8 @@ type RequestData struct {
 	Command Command
 }
 
-func ParseRequestData(request *http.Request, baseUrl string) (oRequest *RequestData, err error) {
+func ParseRequestData(request *http.Request) (oRequest *RequestData, err error) {
+/*
 	oRequest = &RequestData{
 		Command:CmdUnknown}
 
@@ -37,4 +38,6 @@ func ParseRequestData(request *http.Request, baseUrl string) (oRequest *RequestD
 	}
 
 	return oRequest, nil
+*/
+	return nil, nil
 }

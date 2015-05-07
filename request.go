@@ -12,7 +12,7 @@ type Request struct {
 	Data interface{}
 }
 
-func ParseRequest(request *http.Request, baseUrl string) (oRequest *Request, err error) {
+func ParseRequest(request *http.Request) (oRequest *Request, err error) {
 	//	var regexp = regexp.MustCompile(`^(\w+)(\('(.+)'\))?$`)
 	//	return Request{Resource: "qwerty", Others: regexp.FindStringSubmatch(resources)}, err
 
@@ -31,7 +31,7 @@ func ParseRequest(request *http.Request, baseUrl string) (oRequest *Request, err
 
 	switch oRequest.Version {
 		case v4.ODataVersion:
-			oRequest.Data, err = v4.ParseRequestData(request, baseUrl)
+			oRequest.Data, err = v4.ParseRequestData(request)
 		default:
 			err = errors.New("Unsupported OData version")
 	}

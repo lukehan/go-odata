@@ -7,7 +7,7 @@ import (
 )
 
 func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
-	oRequest, err := ParseRequest(request.Request, serviceRoot)
+	oRequest, err := ParseRequest(request.Request)
 
 	if err != nil {
 		response.WriteErrorString(http.StatusInternalServerError, err.Error())
@@ -24,17 +24,17 @@ func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	oRequestData, ok := oRequest.Data.(*v4.RequestData)
-	if !ok {
-		response.WriteErrorString(http.StatusInternalServerError, "RequestData version 4.0 can't be converted to v4.RequestData")
+	var oResponse *v4.Response
+	oResponse, err = ReadTheServiceRootV4(response.Header())
+	if err != nil {
+		response.WriteErrorString(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	if oRequestData.Command != v4.CmdReadServiceRoot {
-		response.WriteErrorString(http.StatusInternalServerError, "Wrong test method")
-		return
-	}
+	response.WriteEntity(oResponse)
+}
 
+func ReadTheServiceRootV4(header http.Header) (*v4.Response, error) {
 	items := make([]v4.ResourceDefinition, 0, 6)
 	items = append(items,
 		v4.ResourceDefinition{Name: "Photos", Kind: v4.KindEntitySet, Url: "Photos"})
@@ -49,12 +49,5 @@ func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
 	items = append(items,
 		v4.ResourceDefinition{Name: "GetNearestAirport", Kind: v4.KindFunctionImport, Url: "GetNearestAirport"})
 
-	var oResponse *v4.Response
-	oResponse, err = v4.PrepareResponse(response.Header(), items)
-	if err != nil {
-		response.WriteErrorString(http.StatusInternalServerError, err.Error())
-		return
-	}
-
-	response.WriteEntity(oResponse)
+	return v4.PrepareResponse(header, items)
 }
