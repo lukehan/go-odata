@@ -1,30 +1,15 @@
 package v4
 
-import (
-	"net/http"
-)
+import "net/http"
 
-const (
-// Read the service root
-	KindEntitySet ResourceKind = "EntitySet"
-	KindSingleton ResourceKind = "Singleton"
-	KindFunctionImport ResourceKind = "FunctionImport"
-)
-
-type ResourceKind string
-
-type ResourceDefinition struct {
-	Name string `json:"name"`
-	Kind ResourceKind `json:"kind"`
-	Url string `json:"url"`
+type ResponseHeader struct {
+	ODataContext string `json:"@odata.context,omitempty"` // example = "http://services.odata.org/V4/TripPinService/$metadata"
 }
 
-type Response struct {
-	ODataContext string `json:"@odata.context,omitempty"`
-	Value interface{} `json:"value"`
-}
-
-func PrepareResponse(header http.Header, responseData interface{}) (response *Response, err error) {
+func (r *ResponseHeader) AddVersion(header http.Header) {
 	header.Add("OData-Version", ODataVersion)
-	return &Response{Value:responseData}, nil
+}
+
+type Response interface {
+	GetResponse(header http.Header) interface{}
 }

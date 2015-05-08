@@ -5,10 +5,6 @@ import (
 //	"strings"
 )
 
-const (
-	ODataVersion string = "4.0"
-)
-
 type Command int
 
 // OData commands

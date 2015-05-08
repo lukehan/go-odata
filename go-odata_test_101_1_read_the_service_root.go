@@ -24,30 +24,18 @@ func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	var oResponse *v4.Response
-	oResponse, err = ReadTheServiceRootV4(response.Header())
-	if err != nil {
-		response.WriteErrorString(http.StatusInternalServerError, err.Error())
-		return
-	}
-
+	oResponse := ReadTheServiceRootV4(response.Header())
 	response.WriteEntity(oResponse)
 }
 
-func ReadTheServiceRootV4(header http.Header) (*v4.Response, error) {
-	items := make([]v4.ResourceDefinition, 0, 6)
-	items = append(items,
-		v4.ResourceDefinition{Name: "Photos", Kind: v4.KindEntitySet, Url: "Photos"})
-	items = append(items,
-		v4.ResourceDefinition{Name: "People", Kind: v4.KindEntitySet, Url: "People"})
-	items = append(items,
-		v4.ResourceDefinition{Name: "Airlines", Kind: v4.KindEntitySet, Url: "Airlines"})
-	items = append(items,
-		v4.ResourceDefinition{Name: "Airports", Kind: v4.KindEntitySet, Url: "Airports"})
-	items = append(items,
-		v4.ResourceDefinition{Name: "Me", Kind: v4.KindSingleton, Url: "Me"})
-	items = append(items,
-		v4.ResourceDefinition{Name: "GetNearestAirport", Kind: v4.KindFunctionImport, Url: "GetNearestAirport"})
+func ReadTheServiceRootV4(header http.Header) (v4.Response) {
+	r := v4.ResponseResourceList{Resources:[]v4.Resource{
+		v4.Resource{Name: "Photos", Kind: v4.KindEntitySet, Url: "Photos"},
+		v4.Resource{Name: "People", Kind: v4.KindEntitySet, Url: "People"},
+		v4.Resource{Name: "Airlines", Kind: v4.KindEntitySet, Url: "Airlines"},
+		v4.Resource{Name: "Airports", Kind: v4.KindEntitySet, Url: "Airports"},
+		v4.Resource{Name: "Me", Kind: v4.KindSingleton, Url: "Me"},
+		v4.Resource{Name: "GetNearestAirport", Kind: v4.KindFunctionImport, Url: "GetNearestAirport"}}}
 
-	return v4.PrepareResponse(header, items)
+	return r
 }
