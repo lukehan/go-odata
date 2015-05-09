@@ -24,12 +24,14 @@ func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
 		return
 	}
 
-	oResponse := ReadTheServiceRootV4(response.Header())
+	oResponse := ReadTheServiceRootV4()
+
+	response.AddHeader("OData-Version", v4.ODataVersion)
 	response.WriteEntity(oResponse)
 }
 
-func ReadTheServiceRootV4(header http.Header) (v4.Response) {
-	r := v4.ResponseResourceList{Resources:[]v4.Resource{
+func ReadTheServiceRootV4() (r *v4.ResponseResourceList) {
+	r = &v4.ResponseResourceList{Resources:[]v4.Resource{
 		v4.Resource{Name: "Photos", Kind: v4.KindEntitySet, Url: "Photos"},
 		v4.Resource{Name: "People", Kind: v4.KindEntitySet, Url: "People"},
 		v4.Resource{Name: "Airlines", Kind: v4.KindEntitySet, Url: "Airlines"},

@@ -10,6 +10,12 @@ func (r *ResponseHeader) AddVersion(header http.Header) {
 	header.Add("OData-Version", ODataVersion)
 }
 
+/*
 type Response interface {
 	GetResponse(header http.Header) interface{}
 }
+
+func AddVersionToHttpHeader(header http.Header) {
+	header.Add("OData-Version", ODataVersion)
+}
+*/

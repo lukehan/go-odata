@@ -1,5 +1,4 @@
 package v4
-import "net/http"
 
 const (
 // Read the service root
@@ -20,9 +19,4 @@ type ResponseResourceList struct {
 	ResponseHeader
 
 	Resources []Resource `json:"value"`
-}
-
-func (r ResponseResourceList) GetResponse(header http.Header) interface{} {
-	header.Add("OData-Version", ODataVersion)
-	return nil
 }
