@@ -27,7 +27,14 @@ func TestAverage(t *testing.T) {
 	Operation("ReadTheServiceRoot").
 	Writes(true).
 	Produces(restful.MIME_JSON))
-	log.Println("Publishing \"01. Read the service root\" method at " + serviceRoot + "/")
+	log.Println("Publishing \"101-1. Read the service root\" method at " + serviceRoot + "/")
+
+	ws.Route(ws.GET("/People").To(ReadAnEntitySet).
+	Doc("Read an entity set").
+	Operation("ReadAnEntitySet").
+	Writes(true).
+	Produces(restful.MIME_JSON))
+	log.Println("Publishing \"101-3. Read an entity set\" method at " + serviceRoot + "/")
 
 	restful.Add(ws)
 
