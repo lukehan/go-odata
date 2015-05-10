@@ -12,7 +12,7 @@ import (
 	"sync"
 )
 
-var serviceRoot = "/odata/tests"
+var serviceRoot = "/odata/examples"
 
 func TestAverage(t *testing.T) {
 	port := "8080"
@@ -23,18 +23,28 @@ func TestAverage(t *testing.T) {
 	ws.Path(serviceRoot)
 
 	ws.Route(ws.GET("/").To(ReadTheServiceRoot).
-	Doc("Read the service root").
+	Doc("101.1 Read the service root").
 	Operation("ReadTheServiceRoot").
-	Writes(true).
+	Writes("v4.ResponseResourceList").
 	Produces(restful.MIME_JSON))
 	log.Println("Publishing \"101-1. Read the service root\" method at " + serviceRoot + "/")
 
 	ws.Route(ws.GET("/People").To(ReadAnEntitySet).
-	Doc("Read an entity set").
+	Doc("101.3 Read an entity set").
 	Operation("ReadAnEntitySet").
-	Writes(true).
+	Writes("v4.ResponseEntrySet").
 	Produces(restful.MIME_JSON))
-	log.Println("Publishing \"101-3. Read an entity set\" method at " + serviceRoot + "/")
+	log.Println("Publishing \"101-3. Read an entity set\" method at " + serviceRoot + "/People")
+
+	ws.Route(ws.GET("/{resource:People\\('.+'\\)}").To(GetASingleEntityFromACollection).
+	Doc("101.4 Get a single entity from a collection").
+	Operation("ReadAnEntitySet").
+	Param(ws.PathParameter("resource", "Resource").
+	DataType("string").
+	Required(true)).
+	Writes("Man").
+	Produces(restful.MIME_JSON))
+	log.Println("Publishing \"101-4. Get a single entity from a collection\" method at " + serviceRoot + "/People('{id}')")
 
 	restful.Add(ws)
 

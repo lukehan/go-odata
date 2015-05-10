@@ -27,6 +27,8 @@ type City struct {
 	Region string `json:"Region"`
 }
 
+var peopleResourceBaseUrl = serviceRoot + "/People"
+
 func ReadAnEntitySet(request *restful.Request, response *restful.Response) {
 	oRequest, err := ParseRequest(request.Request)
 
@@ -47,7 +49,7 @@ func ReadAnEntitySet(request *restful.Request, response *restful.Response) {
 
 	oResponse := ReadAnEntitySetV4(request)
 
-	response.AddHeader("OData-Version", v4.ODataVersion)
+	response.AddHeader(v4.HEADER_ODataVersion, v4.ODataVersion)
 	response.WriteEntity(oResponse)
 }
 
@@ -79,8 +81,8 @@ func ReadAnEntitySetV4(request *restful.Request) (r *v4.ResponseEntrySet) {
 			Gender: "Male"}}
 
 	for _,e := range entries  {
-		e.SetId(e.UserName, request.Request)
-		e.SetEditLink(e.UserName, request.Request)
+		e.SetId(peopleResourceBaseUrl, e.UserName)
+		e.SetEditLink(peopleResourceBaseUrl, e.UserName)
 	}
 
 	return &v4.ResponseEntrySet{Entries:entries}

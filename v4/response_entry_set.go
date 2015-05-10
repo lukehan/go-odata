@@ -1,8 +1,4 @@
 package v4
-import (
-	"net/http"
-	"net/url"
-)
 
 type ResponseEntrySet struct {
 	ResponseHeader
@@ -12,25 +8,16 @@ type ResponseEntrySet struct {
 	Entries interface{} `json:"value"`
 }
 type EntryAnnotation struct {
+	ODataContext string `json:"@odata.context,omitempty"` // example = "http://services.odata.org/V4/TripPinService/$metadata#People/$entity"
 	ODataId string `json:"@odata.id,omitempty"` // example = "http://services.odata.org/V4/TripPinService/People('russellwhyte')"
 	ODataETag string `json:"@odata.etag,omitempty"` // example = "W/\"08D256BD91FA2AEF\""
 	ODataEditLink string `json:"@odata.editLink,omitempty"` // example = "http://services.odata.org/V4/TripPinService/People('russellwhyte')"
 }
 
-func (e *EntryAnnotation) SetId(id string, request *http.Request) {
-	url := url.URL{
-		Scheme: request.URL.Scheme,
-		Opaque: request.URL.Opaque,
-		Host: request.URL.Host,
-		Path: request.URL.Path}
-	e.ODataId = url.String() +  "('" + id + "')"
+func (e *EntryAnnotation) SetId(resourceUrl string, id string) {
+	e.ODataId = resourceUrl +  "('" + id + "')"
 }
 
-func (e *EntryAnnotation) SetEditLink(id string, request *http.Request) {
-	url := url.URL{
-		Scheme: request.URL.Scheme,
-		Opaque: request.URL.Opaque,
-		Host: request.URL.Host,
-		Path: request.URL.Path}
-	e.ODataEditLink = url.String() +  "('" + id + "')"
+func (e *EntryAnnotation) SetEditLink(resourceUrl string, id string) {
+	e.ODataEditLink = resourceUrl +  "('" + id + "')"
 }

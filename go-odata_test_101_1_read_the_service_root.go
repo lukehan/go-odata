@@ -26,7 +26,7 @@ func ReadTheServiceRoot(request *restful.Request, response *restful.Response) {
 
 	oResponse := ReadTheServiceRootV4()
 
-	response.AddHeader("OData-Version", v4.ODataVersion)
+	response.AddHeader(v4.HEADER_ODataVersion, v4.ODataVersion)
 	response.WriteEntity(oResponse)
 }
 

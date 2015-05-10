@@ -1,5 +1,10 @@
 package v4
 
 const (
-	ODataVersion string = "4.0"
+	HEADER_ODataVersion = "OData-Version"
+	HEADER_ODataMaxVersion = "OData-MaxVersion"
+)
+
+const (
+	ODataVersion = "4.0"
 )
